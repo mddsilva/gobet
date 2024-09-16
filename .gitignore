@@ -47,3 +47,5 @@ coverage.out
 # Somente necessário se não quiser controlar o go.mod e go.sum
 #go.mod
 #go.sum
+
+.env
