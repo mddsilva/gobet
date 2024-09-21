@@ -12,6 +12,7 @@ import (
 
 type AuthService interface {
 	Signup(c *gin.Context)
+	Signin(c *gin.Context)
 }
 
 type AuthServiceImpl struct {
@@ -54,6 +55,44 @@ func (u AuthServiceImpl) Signup(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{
 		"message": "User created successfully",
 		"data":    data,
+	})
+}
+
+func (u AuthServiceImpl) Signin(c *gin.Context) {
+	var request dto.SigninDTO
+	if err := c.ShouldBindJSON(&request); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error":   "Invalid input data",
+			"details": err.Error(),
+		})
+		return
+	}
+
+	user, err := u.userRepository.FindByEmail(request.Email)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error":   "Internal server error",
+			"details": err.Error(),
+		})
+		return
+	}
+
+	if user == nil {
+		c.JSON(http.StatusUnauthorized, gin.H{
+			"error": "Credentials invalid",
+		})
+		return
+	}
+
+	if err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(request.Password)); err != nil {
+		c.JSON(http.StatusUnauthorized, gin.H{
+			"error": "Credentials invalid",
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"message": "Login successful",
 	})
 }
 

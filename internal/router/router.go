@@ -12,6 +12,7 @@ func Init(init *config.Initialization) *gin.Engine {
 	{
 		user := api.Group("/auth")
 		user.POST("/signup", init.AuthCtrl.Signup)
+		user.POST("/signin", init.AuthCtrl.Signin)
 	}
 
 	return router

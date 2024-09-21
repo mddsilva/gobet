@@ -7,6 +7,7 @@ import (
 
 type AuthController interface {
 	Signup(c *gin.Context)
+	Signin(c *gin.Context)
 }
 
 type AuthControllerImpl struct {
@@ -15,6 +16,10 @@ type AuthControllerImpl struct {
 
 func (u AuthControllerImpl) Signup(c *gin.Context) {
 	u.svc.Signup(c)
+}
+
+func (u AuthControllerImpl) Signin(c *gin.Context) {
+	u.svc.Signin(c)
 }
 
 func AuthControllerInit(authService service.AuthService) *AuthControllerImpl {
