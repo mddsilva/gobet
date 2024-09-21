@@ -1,0 +1,15 @@
+version: "3"
+
+services:
+  postgres:
+    image: postgres:latest
+    container_name: portal-finance-db
+    restart: unless-stopped
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_DB=gotbet-api
+      - POSTGRES_USER=root
+      - POSTGRES_PASSWORD=root
