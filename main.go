@@ -1,11 +1,14 @@
 package main
 
 import (
-	"github.com/gin-gonic/gin"
+	"github.com/mddsilva/gobet/internal/router"
+	"github.com/mddsilva/gobet/pkg/config"
 )
 
 func main() {
-	server := gin.Default()
+
+	init := config.Init()
+	server := router.Init(init)
 
 	server.Run(":8080")
 }
