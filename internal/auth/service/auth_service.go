@@ -2,8 +2,10 @@ package service
 
 import (
 	"net/http"
+	"time"
 
 	"github.com/gin-gonic/gin"
+	"github.com/golang-jwt/jwt/v5"
 	"github.com/mddsilva/gobet/internal/auth/domain/dao"
 	"github.com/mddsilva/gobet/internal/auth/domain/dao/dto"
 	"github.com/mddsilva/gobet/internal/auth/repository"
@@ -91,8 +93,24 @@ func (u AuthServiceImpl) Signin(c *gin.Context) {
 		return
 	}
 
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
+		"email": user.Email,
+		"user":  user.ID,
+		"exp":   time.Now().Add(time.Hour * 2).Unix(),
+	})
+
+	jwtToken, err := token.SignedString([]byte("test"))
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error":   "Internal server error",
+			"details": err.Error(),
+		})
+		return
+	}
+
 	c.JSON(http.StatusOK, gin.H{
 		"message": "Login successful",
+		"token":   jwtToken,
 	})
 }
 
